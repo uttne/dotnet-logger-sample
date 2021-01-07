@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NLog.Web;
+
 
 namespace dotnet_logger_sample
 {
@@ -13,7 +15,15 @@ namespace dotnet_logger_sample
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            try
+            {
+                CreateHostBuilder(args).Build().Run();
+            }
+            finally
+            {
+                NLog.LogManager.Shutdown();
+            }
+
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -21,8 +31,9 @@ namespace dotnet_logger_sample
                 .ConfigureLogging(logging =>
                 {
                     logging.ClearProviders();
-                    logging.AddConsole(option => option.IncludeScopes = true);
+                    logging.SetMinimumLevel(LogLevel.Trace);
                 })
+                .UseNLog()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

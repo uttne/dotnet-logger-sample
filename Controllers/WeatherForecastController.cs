@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,6 +26,12 @@ namespace dotnet_logger_sample.Controllers
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
+            _logger.LogTrace("Trace");
+            _logger.LogDebug("Debug");
+            _logger.LogInformation("Information detail: {alpha}", new { item = new Random().Next(), item2 = "aaaa" + new Random().Next() });
+            _logger.LogWarning("Warning");
+            _logger.LogError(new Exception("exception message", new InvalidOperationException("inner exception message")), "Error");
+
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
